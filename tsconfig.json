@@ -4,6 +4,7 @@
   "compilerOptions": {
     // TODO: Remove "dom" from this when support for Node 16 is dropped
     "lib": ["es2021", "dom"],
+    "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
