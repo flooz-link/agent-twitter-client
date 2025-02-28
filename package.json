@@ -28,6 +28,9 @@
     "format": "prettier --write src/**/*.ts",
     "test": "jest"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "@roamhq/wrtc": "^0.8.0",
     "@sinclair/typebox": "^0.32.20",
