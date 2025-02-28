@@ -20,7 +20,10 @@ export class MonitorAudioPlugin implements Plugin {
    * @param sampleRate  The expected PCM sample rate (e.g. 16000 or 48000).
    * @param debug       If true, enables debug logging via Logger.
    */
-  constructor(private readonly sampleRate = 48000, debug = false) {
+  constructor(
+    private readonly sampleRate = 48000,
+    debug = false,
+  ) {
     this.logger = new Logger(debug);
 
     // Spawn ffplay to read raw PCM (s16le) on stdin

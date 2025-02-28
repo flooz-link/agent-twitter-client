@@ -108,7 +108,8 @@ export async function requestApi<T>(
   const transferEncoding = res.headers.get('transfer-encoding');
   if (transferEncoding === 'chunked') {
     // Handle streaming response, if a reader is present
-    const reader = typeof res.body?.getReader === 'function' ? res.body.getReader() : null;
+    const reader =
+      typeof res.body?.getReader === 'function' ? res.body.getReader() : null;
     if (!reader) {
       try {
         const text = await res.text();

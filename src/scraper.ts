@@ -19,7 +19,6 @@ import {
   fetchSearchTweets,
   SearchMode,
   searchProfiles,
-  searchQuotedTweets,
   searchTweets,
 } from './search';
 import {

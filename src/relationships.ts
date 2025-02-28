@@ -162,7 +162,6 @@ export async function followUser(
   username: string,
   auth: TwitterAuth,
 ): Promise<Response> {
-
   // Check if the user is logged in
   if (!(await auth.isLoggedIn())) {
     throw new Error('Must be logged in to follow users');
@@ -194,8 +193,11 @@ export async function followUser(
   });
 
   // Install auth headers
-  await auth.installTo(headers, 'https://api.twitter.com/1.1/friendships/create.json');
-  
+  await auth.installTo(
+    headers,
+    'https://api.twitter.com/1.1/friendships/create.json',
+  );
+
   // Make the follow request using auth.fetch
   const res = await auth.fetch(
     'https://api.twitter.com/1.1/friendships/create.json',

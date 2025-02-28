@@ -1,6 +1,6 @@
 import { getScraper } from './test-utils';
 import { QueryTweetsResponse } from './timeline-v1';
-import { Mention, Tweet, getTweetAnonymous } from './tweets';
+import { Mention, Tweet } from './tweets';
 import fs from 'fs';
 import path from 'path';
 

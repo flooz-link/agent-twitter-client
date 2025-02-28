@@ -40,9 +40,8 @@ beforeAll(async () => {
     testUserId = profile.userId;
 
     // Get first conversation ID for testing
-    const conversations = await scraper.getDirectMessageConversations(
-      testUserId,
-    );
+    const conversations =
+      await scraper.getDirectMessageConversations(testUserId);
 
     if (
       !conversations.conversations.length &&
@@ -71,9 +70,8 @@ describe('Direct Message Tests', () => {
     if (shouldSkipV2Tests) return;
 
     const scraper = await getScraper();
-    const conversations = await scraper.getDirectMessageConversations(
-      testUserId,
-    );
+    const conversations =
+      await scraper.getDirectMessageConversations(testUserId);
 
     expect(conversations).toBeDefined();
     expect(conversations.conversations).toBeInstanceOf(Array);
@@ -95,9 +93,8 @@ describe('Direct Message Tests', () => {
     if (shouldSkipV2Tests) return;
 
     const scraper = await getScraper();
-    const conversations = await scraper.getDirectMessageConversations(
-      testUserId,
-    );
+    const conversations =
+      await scraper.getDirectMessageConversations(testUserId);
 
     if (conversations.conversations.length > 0) {
       const conversation = conversations.conversations[0];

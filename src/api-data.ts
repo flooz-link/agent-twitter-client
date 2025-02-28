@@ -56,10 +56,10 @@ type EndpointFields<EndpointUrl> =
   EndpointUrl extends `https://twitter.com/i/api/graphql/${EndpointVersion}/${EndpointName}?variables=${EncodedVariables}&features=${EncodedFeatures}&fieldToggles=${EncodedFieldToggles}`
     ? EndpointFieldInfo
     : EndpointUrl extends `https://twitter.com/i/api/graphql/${EndpointVersion}/${EndpointName}?variables=${EncodedVariables}&features=${EncodedFeatures}`
-    ? SomePartial<EndpointFieldInfo, 'fieldToggles'>
-    : EndpointUrl extends `https://twitter.com/i/api/graphql/${EndpointVersion}/${EndpointName}?variables=${EncodedVariables}`
-    ? SomePartial<EndpointFieldInfo, 'features' | 'fieldToggles'>
-    : Partial<EndpointFieldInfo>;
+      ? SomePartial<EndpointFieldInfo, 'fieldToggles'>
+      : EndpointUrl extends `https://twitter.com/i/api/graphql/${EndpointVersion}/${EndpointName}?variables=${EncodedVariables}`
+        ? SomePartial<EndpointFieldInfo, 'features' | 'fieldToggles'>
+        : Partial<EndpointFieldInfo>;
 
 export type ApiRequestInfo<EndpointUrl> = EndpointFields<EndpointUrl> & {
   /**
@@ -131,9 +131,10 @@ function parseEndpointExample<
     variables: variables ? JSON.parse(variables) : undefined,
     features: features ? JSON.parse(features) : undefined,
     fieldToggles: fieldToggles ? JSON.parse(fieldToggles) : undefined,
-  } as Omit<ApiRequestInfo<Endpoints[Endpoint]>, 'toRequestUrl'>) as ApiRequestInfo<
-    Endpoints[Endpoint]
-  >;
+  } as Omit<
+    ApiRequestInfo<Endpoints[Endpoint]>,
+    'toRequestUrl'
+  >) as ApiRequestInfo<Endpoints[Endpoint]>;
 }
 
 type ApiRequestFactory<Endpoints> = {

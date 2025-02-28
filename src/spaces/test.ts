@@ -134,7 +134,7 @@ async function main() {
   });
 
   // When a user reacts, send back an emoji to test the flow
-  space.on('guestReaction', (evt) => {
+  space.on('guestReaction', (_evt) => {
     // Pick a random emoji from the list
     const emojis = ['💯', '✨', '🙏', '🎮'];
     const emoji = emojis[Math.floor(Math.random() * emojis.length)];

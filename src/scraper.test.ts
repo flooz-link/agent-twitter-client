@@ -20,7 +20,10 @@ test('scraper can fetch following timeline', async () => {
   const count = 20;
   const seenTweetIds: string[] = [];
 
-  const homeTimeline = await scraper.fetchFollowingTimeline(count, seenTweetIds);
+  const homeTimeline = await scraper.fetchFollowingTimeline(
+    count,
+    seenTweetIds,
+  );
   console.log(homeTimeline);
   expect(homeTimeline).toBeDefined();
   expect(homeTimeline?.length).toBeGreaterThan(0);
