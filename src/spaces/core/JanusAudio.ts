@@ -66,13 +66,17 @@ export class JanusAudioSource extends EventEmitter {
       );
     }
 
+    const numberOfFrames = samples?.length ?? 0 / channels;
+    if (numberOfFrames === 0) {
+      return;
+    }
     // Feed data into the RTCAudioSource
     this.source.onData({
       samples,
       sampleRate,
       bitsPerSample: 16,
       channelCount: channels,
-      numberOfFrames: samples.length / channels,
+      numberOfFrames: numberOfFrames,
     });
   }
 }
