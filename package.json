@@ -2,7 +2,7 @@
   "name": "@flooz-link/agent-twitter-client",
   "description": "A twitter client for agents",
   "keywords": [],
-  "version": "0.0.18-r.01",
+  "version": "0.0.19",
   "type": "module",
   "main": "dist/default/cjs/index.js",
   "types": "./dist/types/index.d.ts",
