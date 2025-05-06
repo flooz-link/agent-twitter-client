@@ -466,29 +466,29 @@ export async function getSpaceSpeakers(
     // }
 
     // Get the space details including participants
+    const params = {
+      'space.fields': 'participant_count,scheduled_start,started_at',
+      expansions: 'speaker_ids,host_ids,invited_user_ids',
+      'user.fields': 'name,username,profile_image_url',
+    };
+    const paramsEncoded = encodeURIComponent(JSON.stringify(params));
+    const url = `https://api.twitter.com/spaces/${spaceId}?${paramsEncoded}`;
+    const response = await auth.fetch(url, {
+      method: 'GET',
+    });
 
-    try {
-      const params = new URLSearchParams({
-        'space.fields': 'participant_count,scheduled_start,started_at',
-        'expansions': 'speaker_ids,host_ids,invited_user_ids',
-        'user.fields': 'name,username,profile_image_url',
-      });
-      const url = `https://api.twitter.com/spaces/${spaceId}?${params}`;
-      const response = await auth.fetch(url, {
-        method: 'GET',
-      });
-  
-      // Update the cookie jar with any new cookies from the response
-      await updateCookieJar(auth.cookieJar(), response.headers);
-  
-      // Check if the response is successful
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error ${response.status}: ${errorText}`);
-      }
-  
-      const spaceData = await response.json();
-      console.log(`getSpaceSpeakers: ${spaceData}`);
+    // Update the cookie jar with any new cookies from the response
+    await updateCookieJar(auth.cookieJar(), response.headers);
+
+    // Check if the response is successful
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error ${response.status}: ${errorText}`);
+    }
+
+    const spaceData = await response.json();
+    console.log(`getSpaceSpeakers: ${spaceData}`);
+
     // const spaceData = await twitterClient.v2.get(`spaces/${spaceId}`, {
     //   'space.fields': 'participant_count,scheduled_start,started_at',
     //   expansions: 'speaker_ids,host_ids,invited_user_ids',
