@@ -460,25 +460,47 @@ export async function getSpaceSpeakers(
 ): Promise<Array<any>> {
   try {
     // Initialize the Twitter client with your credentials
-    const twitterClient = auth.getV2Client();
-    if (null === twitterClient) {
-      return [];
-    }
+    // const twitterClient = auth.getV2Client();
+    // if (null === twitterClient) {
+    //   return [];
+    // }
 
     // Get the space details including participants
 
-    const spaceData = await twitterClient.v2.get(`spaces/${spaceId}`, {
-      'space.fields': 'participant_count,scheduled_start,started_at',
-      expansions: 'speaker_ids,host_ids,invited_user_ids',
-      'user.fields': 'name,username,profile_image_url',
-    });
+    try {
+      const params = new URLSearchParams({
+        'space.fields': 'participant_count,scheduled_start,started_at',
+        'expansions': 'speaker_ids,host_ids,invited_user_ids',
+        'user.fields': 'name,username,profile_image_url',
+      });
+      const url = `https://api.twitter.com/spaces/${spaceId}?${params}`;
+      const response = await auth.fetch(url, {
+        method: 'GET',
+      });
+  
+      // Update the cookie jar with any new cookies from the response
+      await updateCookieJar(auth.cookieJar(), response.headers);
+  
+      // Check if the response is successful
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error ${response.status}: ${errorText}`);
+      }
+  
+      const spaceData = await response.json();
+      console.log(`getSpaceSpeakers: ${spaceData}`);
+    // const spaceData = await twitterClient.v2.get(`spaces/${spaceId}`, {
+    //   'space.fields': 'participant_count,scheduled_start,started_at',
+    //   expansions: 'speaker_ids,host_ids,invited_user_ids',
+    //   'user.fields': 'name,username,profile_image_url',
+    // });
 
     // The speakers data will be in the includes section
-    const speakers = spaceData.includes?.users || [];
+    const speakers = spaceData?.includes?.users || [];
 
     // You may want to filter or categorize by role (host, speaker, listener)
-    const hostIds = spaceData.data.host_ids || [];
-    const speakerIds = spaceData.data.speaker_ids || [];
+    const hostIds = spaceData?.data?.host_ids || [];
+    const speakerIds = spaceData?.data?.speaker_ids || [];
 
     // Add role information to each user
     const speakersWithRoles = speakers.map((user: { id: any }) => {
