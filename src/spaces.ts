@@ -448,3 +448,56 @@ export async function fetchLoginTwitterToken(
     throw error;
   }
 }
+
+/**
+ * Get all speakers in a Twitter Space
+ * @param {string} spaceId - The ID of the Twitter Space
+ * @returns {Promise<Array>} - Array of speaker objects
+ */
+export async function getSpaceSpeakers(
+  spaceId: string,
+  auth: TwitterAuth,
+): Promise<Array<any>> {
+  try {
+    // Initialize the Twitter client with your credentials
+    const twitterClient = auth.getV2Client();
+    if (null === twitterClient) {
+      return [];
+    }
+
+    // Get the space details including participants
+
+    const spaceData = await twitterClient.v2.get(`spaces/${spaceId}`, {
+      'space.fields': 'participant_count,scheduled_start,started_at',
+      expansions: 'speaker_ids,host_ids,invited_user_ids',
+      'user.fields': 'name,username,profile_image_url',
+    });
+
+    // The speakers data will be in the includes section
+    const speakers = spaceData.includes?.users || [];
+
+    // You may want to filter or categorize by role (host, speaker, listener)
+    const hostIds = spaceData.data.host_ids || [];
+    const speakerIds = spaceData.data.speaker_ids || [];
+
+    // Add role information to each user
+    const speakersWithRoles = speakers.map((user: { id: any }) => {
+      let role = 'listener';
+      if (hostIds.includes(user.id)) {
+        role = 'host';
+      } else if (speakerIds.includes(user.id)) {
+        role = 'speaker';
+      }
+
+      return {
+        ...user,
+        role,
+      };
+    });
+
+    return speakersWithRoles;
+  } catch (error) {
+    console.error('Error fetching space speakers:', error);
+    throw error;
+  }
+}
