@@ -454,72 +454,157 @@ export async function fetchLoginTwitterToken(
  * @param {string} spaceId - The ID of the Twitter Space
  * @returns {Promise<Array>} - Array of speaker objects
  */
+// export async function getSpaceSpeakers(
+//   spaceId: string,
+//   auth: TwitterAuth,
+// ): Promise<Array<any>> {
+//   try {
+//     // Initialize the Twitter client with your credentials
+//     // const twitterClient = auth.getV2Client();
+//     // if (null === twitterClient) {
+//     //   return [];
+//     // }
+
+//     // Get the space details including participants
+//     const params = {
+//       'space.fields': 'participant_count,scheduled_start,started_at',
+//       'expansions': 'speaker_ids,host_ids,invited_user_ids',
+//       'user.fields': 'name,username,profile_image_url',
+//     };
+//     const paramsEncoded = encodeURIComponent(JSON.stringify(params));
+//     // const url = `https://api.twitter.com/spaces/${spaceId}?${paramsEncoded}`;
+
+//     const operationName = "AudioSpaceByIdQuery";
+//     const queryId = "erL86D-SHaR_xkUkwxHmrw"; // This may change over time
+
+//     const variables = {
+//       id: spaceId,
+//       isMetatagsQuery: false,
+//       withReplays: true
+//     };
+
+//     const featuresEncoded = encodeURIComponent(JSON.stringify(variables));
+
+//   const url = `https://x.com/i/api/graphql/${queryId}/${operationName}?variables=${variablesEncoded}&features=${featuresEncoded}`;
+
+//   const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+
+//   // Retrieve necessary cookies and tokens
+//   const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+//   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
+
+//   const headers = new Headers({
+//     Accept: '*/*',
+//     Authorization: `Bearer ${(auth as any).bearerToken}`,
+//     'Content-Type': 'application/json',
+//     Cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+//     'User-Agent':
+//       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+//     'x-guest-token': (auth as any).guestToken,
+//     'x-twitter-auth-type': 'OAuth2Client',
+//     'x-twitter-active-user': 'yes',
+//     'x-csrf-token': xCsrfToken?.value as string,
+//   });
+
+//   const response = await auth.fetch(url, {
+//     headers,
+//     method: 'GET',
+//   });
+
+//   // Update the cookie jar with any new cookies from the response
+//   await updateCookieJar(auth.cookieJar(), response.headers);
+
+//   // Check for errors in the response
+//   if (!response.ok) {
+//     throw new Error(`Failed to fetch Audio Space: ${await response.text()}`);
+//   }
+
+//     const spaceData = await response.json();
+//     console.log(`getSpaceSpeakers: ${spaceData}`);
+
+//     // const spaceData = await twitterClient.v2.get(`spaces/${spaceId}`, {
+//     //   'space.fields': 'participant_count,scheduled_start,started_at',
+//     //   expansions: 'speaker_ids,host_ids,invited_user_ids',
+//     //   'user.fields': 'name,username,profile_image_url',
+//     // });
+
+//     // The speakers data will be in the includes section
+//     const speakers = spaceData?.includes?.users || [];
+
+//     // You may want to filter or categorize by role (host, speaker, listener)
+//     const hostIds = spaceData?.data?.host_ids || [];
+//     const speakerIds = spaceData?.data?.speaker_ids || [];
+
+//     // Add role information to each user
+//     const speakersWithRoles = speakers.map((user: { id: any }) => {
+//       let role = 'listener';
+//       if (hostIds.includes(user.id)) {
+//         role = 'host';
+//       } else if (speakerIds.includes(user.id)) {
+//         role = 'speaker';
+//       }
+
+//       return {
+//         ...user,
+//         role,
+//       };
+//     });
+
+//     return speakersWithRoles;
+//   } catch (error) {
+//     console.error('Error fetching space speakers:', error);
+//     throw error;
+//   }
+// }
 export async function getSpaceSpeakers(
   spaceId: string,
   auth: TwitterAuth,
 ): Promise<Array<any>> {
+  // The specific operation name and query ID for Space speakers
+  const operationName = 'AudioSpaceByIdQuery';
+  const queryId = 'erL86D-SHaR_xkUkwxHmrw'; // This may change over time
+
+  const variables = {
+    id: spaceId,
+    isMetatagsQuery: false,
+    withReplays: true,
+  };
+
+  const url = `https://x.com/i/api/graphql/${queryId}/${operationName}`;
+
+  const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+
+  // Retrieve necessary cookies and tokens
+  const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+  const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
+  const headers = new Headers({
+    Authorization: `Bearer {(auth as any).bearerToken}`,
+    Cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    'Content-Type': 'application/json',
+    'x-csrf-token': xCsrfToken?.value as string,
+  });
+
   try {
-    // Initialize the Twitter client with your credentials
-    // const twitterClient = auth.getV2Client();
-    // if (null === twitterClient) {
-    //   return [];
-    // }
-
-    // Get the space details including participants
-    const params = {
-      'space.fields': 'participant_count,scheduled_start,started_at',
-      expansions: 'speaker_ids,host_ids,invited_user_ids',
-      'user.fields': 'name,username,profile_image_url',
-    };
-    const paramsEncoded = encodeURIComponent(JSON.stringify(params));
-    const url = `https://api.twitter.com/spaces/${spaceId}?${paramsEncoded}`;
     const response = await auth.fetch(url, {
-      method: 'GET',
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        variables: variables,
+        features: {
+          spaces_2022_h2_clipping: true,
+          spaces_2022_h2_spaces_communities: true,
+        },
+      }),
     });
-
-    // Update the cookie jar with any new cookies from the response
-    await updateCookieJar(auth.cookieJar(), response.headers);
-
-    // Check if the response is successful
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error ${response.status}: ${errorText}`);
+      throw new Error(`Error: ${response.status}`);
     }
 
-    const spaceData = await response.json();
-    console.log(`getSpaceSpeakers: ${spaceData}`);
-
-    // const spaceData = await twitterClient.v2.get(`spaces/${spaceId}`, {
-    //   'space.fields': 'participant_count,scheduled_start,started_at',
-    //   expansions: 'speaker_ids,host_ids,invited_user_ids',
-    //   'user.fields': 'name,username,profile_image_url',
-    // });
-
-    // The speakers data will be in the includes section
-    const speakers = spaceData?.includes?.users || [];
-
-    // You may want to filter or categorize by role (host, speaker, listener)
-    const hostIds = spaceData?.data?.host_ids || [];
-    const speakerIds = spaceData?.data?.speaker_ids || [];
-
-    // Add role information to each user
-    const speakersWithRoles = speakers.map((user: { id: any }) => {
-      let role = 'listener';
-      if (hostIds.includes(user.id)) {
-        role = 'host';
-      } else if (speakerIds.includes(user.id)) {
-        role = 'speaker';
-      }
-
-      return {
-        ...user,
-        role,
-      };
-    });
-
-    return speakersWithRoles;
+    const data = await response.json();
+    // The speakers information will be in the response data
+    return data.data.audioSpace.participants;
   } catch (error) {
-    console.error('Error fetching space speakers:', error);
+    console.error('Failed to fetch space speakers:', error);
     throw error;
   }
 }
