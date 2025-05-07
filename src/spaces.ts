@@ -556,55 +556,170 @@ export async function fetchLoginTwitterToken(
 //     throw error;
 //   }
 // }
+// export async function getSpaceSpeakers(
+//   spaceId: string,
+//   auth: TwitterAuth,
+// ): Promise<Array<any>> {
+//   // The specific operation name and query ID for Space speakers
+//   const operationName = 'AudioSpaceByIdQuery';
+//   const queryId = 'erL86D-SHaR_xkUkwxHmrw'; // This may change over time
+
+//   const variables = {
+//     id: spaceId,
+//     isMetatagsQuery: false,
+//     withReplays: true,
+//   };
+
+//   const url = `https://x.com/i/api/graphql/${queryId}/${operationName}`;
+
+//   const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+
+//   // Retrieve necessary cookies and tokens
+//   const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+//   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
+//   const headers = new Headers({
+//     'Authorization': `Bearer {(auth as any).bearerToken}`,
+//     'Cookie': await auth.cookieJar().getCookieString(onboardingTaskUrl),
+//     'Content-Type': 'application/json',
+//     'x-csrf-token': xCsrfToken?.value as string,
+//   });
+
+//   try {
+//     const response = await auth.fetch(url, {
+//       method: 'POST',
+//       headers: headers,
+//       body: JSON.stringify({
+//         variables: variables,
+//         features: {
+//           spaces_2022_h2_clipping: true,
+//           spaces_2022_h2_spaces_communities: true,
+//         },
+//       }),
+//     });
+//     if (!response.ok) {
+//       throw new Error(`Error: ${response.status}`);
+//     }
+
+//     const data = await response.json();
+//     // The speakers information will be in the response data
+//     return data.data.audioSpace.participants;
+//   } catch (error) {
+//     console.error('Failed to fetch space speakers:', error);
+//     throw error;
+//   }
+// }
+
 export async function getSpaceSpeakers(
   spaceId: string,
   auth: TwitterAuth,
-): Promise<Array<any>> {
-  // The specific operation name and query ID for Space speakers
-  const operationName = 'AudioSpaceByIdQuery';
-  const queryId = 'erL86D-SHaR_xkUkwxHmrw'; // This may change over time
+): Promise<any> {
+  const queryId = 'pcNrj-KeOVKmpu9SyCFYJQ';
+  const operationName = 'AudioSpaceById';
 
   const variables = {
     id: spaceId,
     isMetatagsQuery: false,
     withReplays: true,
+    withListeners: true,
+  };
+  // const features = {
+  //   spaces_2022_h2_clipping: true,
+  //   spaces_2022_h2_spaces_communities: true
+  // };
+
+  const features = {
+    spaces_2022_h2_spaces_communities: true,
+    spaces_2022_h2_clipping: true,
+    creator_subscriptions_tweet_preview_api_enabled: true,
+    profile_label_improvements_pcf_label_in_post_enabled: true,
+    rweb_tipjar_consumption_enabled: true,
+    verified_phone_label_enabled: false,
+    premium_content_api_read_enabled: false,
+    communities_web_enable_tweet_community_results_fetch: true,
+    c9s_tweet_anatomy_moderator_badge_enabled: true,
+    responsive_web_grok_analyze_button_fetch_trends_enabled: false,
+    responsive_web_grok_analyze_post_followups_enabled: true,
+    responsive_web_jetfuel_frame: false,
+    responsive_web_grok_share_attachment_enabled: true,
+    articles_preview_enabled: true,
+    responsive_web_graphql_skip_user_profile_image_extensions_enabled: false,
+    responsive_web_edit_tweet_api_enabled: true,
+    graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
+    view_counts_everywhere_api_enabled: true,
+    longform_notetweets_consumption_enabled: true,
+    responsive_web_twitter_article_tweet_consumption_enabled: true,
+    tweet_awards_web_tipping_enabled: false,
+    responsive_web_grok_show_grok_translated_post: false,
+    responsive_web_grok_analysis_button_from_backend: true,
+    creator_subscriptions_quote_tweet_preview_enabled: false,
+    freedom_of_speech_not_reach_fetch_enabled: true,
+    standardized_nudges_misinfo: true,
+    tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled:
+      true,
+    longform_notetweets_rich_text_read_enabled: true,
+    longform_notetweets_inline_media_enabled: true,
+    responsive_web_grok_image_annotation_enabled: true,
+    responsive_web_graphql_timeline_navigation_enabled: true,
+    responsive_web_enhance_cards_enabled: false,
   };
 
-  const url = `https://x.com/i/api/graphql/${queryId}/${operationName}`;
+  const variablesEncoded = encodeURIComponent(JSON.stringify(variables));
+  const featuresEncoded = encodeURIComponent(JSON.stringify(features));
+
+  const url = `https://x.com/i/api/graphql/${queryId}/${operationName}?variables=${variablesEncoded}&features=${featuresEncoded}`;
 
   const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
 
   // Retrieve necessary cookies and tokens
   const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
+
+  if (!xCsrfToken) {
+    throw new Error('CSRF Token (ct0) not found in cookies.');
+  }
+  const clientTransactionId = generateRandomId();
   const headers = new Headers({
-    Authorization: `Bearer {(auth as any).bearerToken}`,
-    Cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    Accept: '*/*',
+    Authorization: `Bearer ${(auth as any).bearerToken}`,
     'Content-Type': 'application/json',
-    'x-csrf-token': xCsrfToken?.value as string,
+    Cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    'x-guest-token': (auth as any).guestToken,
+    'x-twitter-auth-type': 'OAuth2Session',
+    'x-twitter-active-user': 'yes',
+    'x-csrf-token': xCsrfToken.value,
+    'x-client-transaction-id': clientTransactionId,
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-ch-ua':
+      '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+    'x-twitter-client-language': 'en',
+    'sec-ch-ua-mobile': '?0',
+    Referer: 'https://x.com/DimitrisFlooz',
   });
 
   try {
     const response = await auth.fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: headers,
-      body: JSON.stringify({
-        variables: variables,
-        features: {
-          spaces_2022_h2_clipping: true,
-          spaces_2022_h2_spaces_communities: true,
-        },
-      }),
     });
+
+    await updateCookieJar(auth.cookieJar(), response.headers);
+
     if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
-    // The speakers information will be in the response data
-    return data.data.audioSpace.participants;
+
+    if (data.errors && data.errors.length > 0) {
+      throw new Error(`API Errors: ${JSON.stringify(data.errors)}`);
+    }
+
+    return data;
   } catch (error) {
-    console.error('Failed to fetch space speakers:', error);
+    console.error('Error during Periscope authentication:', error);
     throw error;
   }
 }
