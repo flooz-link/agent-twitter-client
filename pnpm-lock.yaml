@@ -33,8 +33,8 @@ importers:
         specifier: ^1.18.2
         version: 1.22.0
       undici:
-        specifier: ^7.1.1
-        version: 7.7.0
+        specifier: ^7.5.0
+        version: 7.5.0
       undici-types:
         specifier: ^7.2.0
         version: 7.7.0
@@ -2785,8 +2785,8 @@ packages:
   undici-types@7.7.0:
     resolution: {integrity: sha512-9zJ2zD8nHfvO3zn1Xm9seFc+ATCmdtcNc7umXyMk6xj9fp+COVCNlH3pq2ZrFLVaBKLDTlvXLTq88+knkNs+BQ==}
 
-  undici@7.7.0:
-    resolution: {integrity: sha512-tZ6+5NBq4KH35rr46XJ2JPFKxfcBlYNaqLF/wyWIO9RMHqqU/gx/CLB1Y2qMcgB8lWw/bKHa7qzspqCN7mUHvA==}
+  undici@7.5.0:
+    resolution: {integrity: sha512-NFQG741e8mJ0fLQk90xKxFdaSM7z4+IQpAgsFI36bCDY9Z2+aXXZjVy2uUksMouWfMI9+w5ejOq5zYYTBCQJDQ==}
     engines: {node: '>=20.18.1'}
 
   universalify@0.1.2:
@@ -3169,7 +3169,7 @@ snapshots:
       '@types/node': 20.5.1
       chalk: 4.1.2
       cosmiconfig: 8.3.6(typescript@5.8.2)
-      cosmiconfig-typescript-loader: 4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.8.2))(ts-node@10.9.2(@types/node@20.5.1)(typescript@5.8.2))(typescript@5.8.2)
+      cosmiconfig-typescript-loader: 4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.8.2))(ts-node@10.9.2(@types/node@22.14.0)(typescript@5.8.2))(typescript@5.8.2)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -4111,7 +4111,7 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  cosmiconfig-typescript-loader@4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.8.2))(ts-node@10.9.2(@types/node@20.5.1)(typescript@5.8.2))(typescript@5.8.2):
+  cosmiconfig-typescript-loader@4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.8.2))(ts-node@10.9.2(@types/node@22.14.0)(typescript@5.8.2))(typescript@5.8.2):
     dependencies:
       '@types/node': 20.5.1
       cosmiconfig: 8.3.6(typescript@5.8.2)
@@ -5837,7 +5837,7 @@ snapshots:
 
   undici-types@7.7.0: {}
 
-  undici@7.7.0: {}
+  undici@7.5.0: {}
 
   universalify@0.1.2: {}
 
