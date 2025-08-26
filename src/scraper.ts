@@ -1032,7 +1032,7 @@ export class Scraper {
   public getArticle(id: string): Promise<TimelineArticle | null> {
     return getArticle(id, this.auth);
   }
-  
+
   /**
    * Creates a new conversation with Grok.
    * @returns A promise that resolves to the conversation ID string.
